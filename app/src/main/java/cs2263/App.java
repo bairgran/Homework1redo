@@ -3,12 +3,150 @@
  */
 package cs2263;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
+import javafx.application.Application;
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.*;
+
+public class App extends Application {
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Course Menu");
+//        Label label = new Label("Hello World, JavaFX");
+//
+//
+//        Label Blabel = new Label("Not clicked");
+//        Button button = new Button("Click");
+//        button.setOnAction(value -> {
+//            Blabel.setText("Clicked");
+//        });
+//        Scene scenee = new Scene(label, 400, 200);
+//        VBox vbox = new VBox(button, Blabel);
+//        Scene scene = new Scene(vbox, 400, 200);
+//        primaryStage.setScene(scene);
+//        List<String> depList = new ArrayList<String>();
+//        depList.add("Computer Science");
+//        depList.add("Chemistry");
+//        depList.add("Physics");
+//        depList.add("Mathematics");
+//        depList.add("Botany");
+//        depList.add("Zoology");
+        Vector<Course> courseVector = new Vector<>();
+
+        Label departmentLabel = new Label("Select Department: ");
+        ComboBox<String> depComboBox = new ComboBox<>();
+        depComboBox.getItems().addAll("Computer Science", "Chemistry", "Physics", "Mathematics", "Botany", "Zoology");
+        HBox depHBox = new HBox(departmentLabel, depComboBox);
+
+        Label courseLabel = new Label("Course Number: (integer) ");
+        TextField courseNumber = new TextField();
+        HBox CNuHBox = new HBox(courseLabel, courseNumber);
+
+        Label courseNameLabel = new Label("Course Name: (String) ");
+        var courseName = new TextField();
+        HBox CNaHBox = new HBox(courseNameLabel, courseName);
+
+        Label courseCredits = new Label("Number of Credits: (integer) ");
+        var creditNumber = new TextField();
+        HBox NCBox = new HBox(courseCredits, creditNumber);
+
+
+        Button enterButton = new Button("Enter");
+        enterButton.setOnAction(value ->{
+            if (courseNumber.getText() == null) {
+                try {
+                    throw new Exception();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (creditNumber.getText() == null) {
+                try {
+                    throw new Exception();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (depComboBox.getValue() == null) {
+                try {
+                    throw new Exception();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (courseName.getText() == null) {
+                try {
+                    throw new Exception();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            int coursenumber = Integer.parseInt(courseNumber.getText());
+            int creditnumber = Integer.parseInt(creditNumber.getText());
+            Course course = new Course(depComboBox.getValue(), coursenumber, courseName.getText(), creditnumber);
+            courseVector.add(course);
+        });
+
+        Button displayAllButton = new Button("Display(all)");
+        displayAllButton.setOnAction(value ->{
+            Stage secondStage = new Stage();
+            secondStage.setTitle("Display All Window");
+            ListView<Course> courseLists = new ListView<>();
+            courseLists.getItems().addAll(courseVector);
+            VBox courseDisplay = new VBox(courseLists);
+            Scene displayScene = new Scene(courseDisplay);
+            secondStage.setScene(displayScene);
+            secondStage.show();
+        });
+
+        Button displayDepButton = new Button("Display(department)");
+        displayDepButton.setOnAction(value ->{
+            Vector<Course> depVector = new Vector<>();
+            Stage secondStage = new Stage();
+            secondStage.setTitle("Display Department Window");
+            ListView<Course> departmentList = new ListView<>();
+            if (depComboBox.getValue() == null) {
+                try {
+                    throw new Exception();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            for (Course var : courseVector) {
+                if (var.getDeptName() == depComboBox.getValue()) {
+                    depVector.add(var);
+                }
+            }
+            departmentList.getItems().addAll(depVector);
+            VBox depDisplay = new VBox(departmentList);
+            Scene displayScene = new Scene(depDisplay);
+            secondStage.setScene(displayScene);
+            secondStage.show();
+        });
+
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction(value ->{
+            primaryStage.close();
+        });
+
+
+        VBox courseEnterDisplay = new VBox(depHBox, CNuHBox, CNaHBox, NCBox, enterButton, displayAllButton, displayDepButton, exitButton);
+        Scene scene = new Scene(courseEnterDisplay, 400, 300);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        Application.launch(args);
+
+
+
+
     }
 }
